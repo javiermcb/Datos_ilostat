@@ -23,11 +23,10 @@ with c[0]:
     relato.titulo("Población", "% Iberia vs UE")
     cuota = fila("IBERIA", "cuota_ue_poblacion")
     g.leyenda([(g.COLOR["IBERIA"], f"Iberia {pct(cuota)}"), (g.COLOR["UE27"], f"Resto UE {pct(100 - cuota) if cuota is not None else '–'}")])
-    st.markdown("<div style='height:38px'></div>", unsafe_allow_html=True)  # baja la dona ~1 cm
     g.dona([("Iberia", fila("IBERIA", "poblacion"), g.COLOR["IBERIA"]),
             ("Resto de la UE", (fila("UE27", "poblacion") or 0) - (fila("IBERIA", "poblacion") or 0), g.COLOR["UE27"])],
-           alto=220, centro=g.millones(fila("IBERIA", "poblacion")))
-    g.barras_areas(barras, "poblacion", alto_fila=56, media=media("poblacion"))
+           alto=200, centro=g.millones(fila("IBERIA", "poblacion")))
+    g.barras_areas(barras, "poblacion", alto_fila=52, media=media("poblacion"))
 with c[1]:
     relato.titulo("Fuerza Laboral", "Tasa de actividad · Iberia vs UE")
     g.leyenda([(g.COLOR["IBERIA"], f"Iberia {pct(fila('IBERIA', 'tasa_actividad'))}"), (g.COLOR["UE27"], f"Media UE {pct(fila('UE27', 'tasa_actividad'))}")])

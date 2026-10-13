@@ -64,13 +64,13 @@ def dona(partes, alto=234, centro=None):
         return
     d["pct"] = 100 * d.valor / d.valor.sum()
     d["orden"] = range(len(d))
-    radio = alto // 2 - 8  # la dona cabe entera en la altura del gráfico
-    ch = alt.Chart(d).mark_arc(innerRadius=int(radio * 0.62), outerRadius=radio, stroke="#ffffff", strokeWidth=1).encode(
+    radio = 72  # tamaño fijo y pequeño, con margen: no se corta ni por arriba ni en columnas estrechas
+    ch = alt.Chart(d).mark_arc(innerRadius=46, outerRadius=radio, stroke="#ffffff", strokeWidth=1).encode(
         theta=alt.Theta("valor:Q", stack=True), order=alt.Order("orden:Q"),
         color=alt.Color("color:N", scale=None),
         tooltip=[alt.Tooltip("parte:N", title=""), alt.Tooltip("pct:Q", format=",.1f", title="%")])
     if centro:
-        ch += alt.Chart(pd.DataFrame({"t": [centro]})).mark_text(fontSize=18, fontWeight="bold", color=COLOR["IBERIA"]).encode(text="t:N")
+        ch += alt.Chart(pd.DataFrame({"t": [centro]})).mark_text(fontSize=15, fontWeight="bold", color=COLOR["IBERIA"]).encode(text="t:N")
     mostrar(ch.properties(height=alto))
 
 
