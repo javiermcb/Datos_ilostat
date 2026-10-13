@@ -1,12 +1,10 @@
 name: Muestra para las pruebas de la app
 
 # Genera el modelo con datos reales de ILOSTAT y lo guarda en resultados/dev_modelo de la rama desde la que se lanza
-# (las pruebas de la app abren todas las páginas con esa muestra). Lanzar a mano para refrescarla.
+# (las pruebas de la app abren todas las páginas con esa muestra). Solo a mano: Actions → este workflow → Run workflow,
+# eligiendo la rama (nunca se lanza solo, para no escribir en main sin querer).
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/muestra_app.yml"
 
 permissions:
   contents: write

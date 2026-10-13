@@ -19,8 +19,6 @@ nav = st.navigation([
     st.Page("paginas/panel.py", title="Panel", icon=":material/dashboard:", default=True),
     st.Page("paginas/evolucion.py", title="Evolución", icon=":material/trending_up:"),
     st.Page("paginas/paises.py", title="Países de la UE", icon=":material/public:"),
-    st.Page("paginas/datos_descarga.py", title="Datos y descargas", icon=":material/download:"),
-    st.Page("paginas/estado.py", title="Estado de los datos", icon=":material/fact_check:"),
 ], position="top")
 
 _, disponibles, faltan = datos.conexion()
@@ -54,7 +52,7 @@ if errores and not disponibles:
     st.stop()
 if errores:
     st.sidebar.warning(f"{len(errores)} tablas no se han podido actualizar (se muestra la última copia descargada, "
-                       "si la hay). Detalle en «Estado de los datos».")
+                       "si la hay).")
 
 nav.run()
 
