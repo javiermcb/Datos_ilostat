@@ -10,6 +10,7 @@ import streamlit as st
 
 TEXTO, TEXTO_SUAVE = "#00145A", "#4a5585"
 COLOR = {"UE27": "#00145A", "IBERIA": "#E8000B", "ESP": "#2457F5", "PRT": "#C5DCDC"}
+MEDIA = "#F28C28"  # líneas de media de la UE: naranja, distinto de los colores de las áreas
 RESTO = "#E3E6EE"  # resto de países: más claro que Portugal para no confundirlos
 NOMBRE = {"UE27": "UE", "IBERIA": "Iberia", "ESP": "España", "PRT": "Portugal"}
 LOCALE = {"number": {"decimal": ",", "thousands": ".", "grouping": [3], "currency": ["", " €"]}}
@@ -63,7 +64,8 @@ def dona(partes, alto=234, centro=None):
         return
     d["pct"] = 100 * d.valor / d.valor.sum()
     d["orden"] = range(len(d))
-    ch = alt.Chart(d).mark_arc(innerRadius=62, outerRadius=100, stroke="#ffffff", strokeWidth=1).encode(
+    radio = alto // 2 - 8  # la dona cabe entera en la altura del gráfico
+    ch = alt.Chart(d).mark_arc(innerRadius=int(radio * 0.62), outerRadius=radio, stroke="#ffffff", strokeWidth=1).encode(
         theta=alt.Theta("valor:Q", stack=True), order=alt.Order("orden:Q"),
         color=alt.Color("color:N", scale=None),
         tooltip=[alt.Tooltip("parte:N", title=""), alt.Tooltip("pct:Q", format=",.1f", title="%")])
@@ -91,10 +93,10 @@ def barras_areas(d, col, alto_fila=78, media=None):
     t = base.mark_text(align="left", dx=5, fontSize=12, color=TEXTO_SUAVE).encode(text="etiqueta:N")
     capas = b + t
     if media is not None and media == media:
-        m = pd.DataFrame({"v": [media], "t": [f"Media UE por país: {millones(media)}"]})
-        regla = alt.Chart(m).encode(x=alt.X("v:Q"))
-        capas += regla.mark_rule(color=COLOR["UE27"], strokeDash=[5, 4], strokeWidth=2)
-        capas += regla.mark_text(align="left", baseline="bottom", dx=4, dy=-2, y=0, fontSize=11, color=COLOR["UE27"]).encode(text="t:N")
+        m = pd.DataFrame({"media": [media], "t": [f"Media UE por país: {millones(media)}"]})
+        regla = alt.Chart(m).encode(x=alt.X("media:Q", title=None), tooltip=[alt.Tooltip("t:N", title="")])
+        capas += regla.mark_rule(color=MEDIA, strokeDash=[5, 4], strokeWidth=2.5)
+        capas += regla.mark_text(align="left", baseline="bottom", dx=4, dy=-2, y=0, fontSize=11, fontWeight="bold", color=MEDIA).encode(text="t:N")
     mostrar(capas.properties(height=alto_fila * len(d)))
 
 
@@ -129,7 +131,8 @@ def ranking(d, cat, val, color, fmt=",.1f", titulo=None, ref=None, ref_texto="Me
         tooltip=[alt.Tooltip(f"{cat}:N", title=""), alt.Tooltip(f"{val}:Q", format=fmt, title=titulo or val)])
     capas += base.mark_text(align="left", dx=4, fontSize=11, color=TEXTO).encode(text=alt.Text(f"{val}:Q", format=fmt))
     if ref is not None:
-        r = alt.Chart(pd.DataFrame({"v": [ref], "t": [ref_texto]})).encode(x="v:Q")
-        capas += r.mark_rule(color=COLOR["UE27"], strokeDash=[5, 4], strokeWidth=2)
-        capas += r.mark_text(align="left", baseline="bottom", dx=4, y=-4, fontSize=11, fontWeight="bold", color=COLOR["UE27"]).encode(text="t:N")
+        etiqueta = f"{ref_texto}: {es(ref, 1 if fmt.endswith('.1f') else 0)}"
+        r = alt.Chart(pd.DataFrame({"media": [ref], "t": [etiqueta]})).encode(x=alt.X("media:Q", title=None), tooltip=[alt.Tooltip("t:N", title="")])
+        capas += r.mark_rule(color=MEDIA, strokeDash=[5, 4], strokeWidth=2.5)
+        capas += r.mark_text(align="left", baseline="bottom", dx=4, y=-4, fontSize=11, fontWeight="bold", color=MEDIA).encode(text="t:N")
     mostrar(capas.properties(height=22 * len(d)))

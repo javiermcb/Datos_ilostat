@@ -11,8 +11,6 @@ MEDIDAS = {"Tasa de paro (%)": "tasa_paro", "Tasa de actividad (%)": "tasa_activ
            "Desempleados (miles)": "desempleados", "Fuerza laboral (miles)": "fuerza_laboral", "Población 15+ (miles)": "poblacion"}
 medida = st.radio("Indicador", list(MEDIDAS), horizontal=True)
 col = MEDIDAS[medida]
-st.caption(f"Año {anyo} · {genero} · línea discontinua: media de la UE (en las tasas, la del conjunto de los 27; "
-           "en personas, el total de la UE entre 27 países).")
 d = datos.q("SELECT m.*, a.tipo FROM mart_comparativa m JOIN dim_area a USING (area_id) WHERE m.anyo = ? AND m.sexo = ?",
             [anyo, SEXO[genero]]) if anyo else None
 if d is None or d.empty:
@@ -25,3 +23,5 @@ tasa = col.startswith("tasa")
 ref = None if ue.empty else (ue.iloc[0] if tasa else ue.iloc[0] / 27)
 g.ranking(paises, "area", col, "color", fmt=",.1f" if tasa else ",.0f", titulo=medida, ref=ref,
           ref_texto="Media UE" if tasa else "Media UE por país")
+st.caption(f"Año {anyo} · {genero} · línea discontinua: media de la UE (en las tasas, la del conjunto de los 27; "
+           "en personas, el total de la UE entre 27 países).")

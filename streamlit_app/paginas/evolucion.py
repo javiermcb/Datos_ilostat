@@ -8,12 +8,10 @@ import relato
 SEXO = {"Todos": "Total", "Hombres": "Hombres", "Mujeres": "Mujeres"}
 genero = st.session_state.get("genero", "Todos")
 st.title("Evolución")
-st.caption(f"{genero} · personas de 15 años o más · la UE solo aparece en los años con datos de los 27 países.")
 NOMBRES = {"UE27": "Media UE", "IBERIA": "Iberia (España + Portugal juntos)"}
-relato.nota("La tasa de Iberia no es la suma de las tasas: es la tasa de España y Portugal tomados como un solo territorio "
-            "(desempleados de los dos / activos de los dos). Por eso siempre queda entre la de Portugal y la de España, "
-            "más cerca de España porque tiene unas cuatro veces más población. Media UE: tasa del conjunto de los 27 países.")
+DESDE = 2018  # las series empiezan en este año
 d = datos.comparativa(SEXO[genero])
+d = d[d.anyo >= DESDE] if not d.empty else d
 if d.empty:
     st.info("Sin datos en esta carga.")
     st.stop()
@@ -48,3 +46,7 @@ else:
         color=alt.Color("medida:N", sort=["Población", "Fuerza laboral", "Desempleados"],
                         scale=alt.Scale(domain=["Población", "Fuerza laboral", "Desempleados"], range=[g.COLOR["UE27"], g.COLOR["ESP"], g.COLOR["IBERIA"]])),
         tooltip=["medida:N", alt.Tooltip("anyo:O", title="Año"), alt.Tooltip("pct:Q", format=",.1f", title="%")]).properties(height=320))
+
+relato.nota("La tasa de Iberia no es la suma de las tasas: es la tasa de España y Portugal tomados como un solo territorio "
+            "(desempleados de los dos / activos de los dos). Por eso siempre queda entre la de Portugal y la de España, "
+            "más cerca de España porque tiene unas cuatro veces más población. Media UE: tasa del conjunto de los 27 países.")
