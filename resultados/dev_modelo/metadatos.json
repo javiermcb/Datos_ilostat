@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-13 10:44 UTC",
+ "generado": "2026-10-13 11:00 UTC",
  "ficheros": {
   "dim_area": {
    "filas": 29,
@@ -11,7 +11,7 @@
   },
   "fact_ilostat": {
    "filas": 4176,
-   "bytes_parquet": 22132
+   "bytes_parquet": 22137
   },
   "marts/mart_comparativa": {
    "filas": 1392,
