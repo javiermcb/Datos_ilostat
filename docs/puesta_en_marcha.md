@@ -10,5 +10,5 @@
    ```toml
    ILO_DATOS = "https://raw.githubusercontent.com/javiermcb/Datos_ilostat/datos-modelo/modelo/"
    ```
-4. **Mantenerla despierta.** *Settings → Secrets and variables → Actions → Variables*: crear `ILO_APP_URL` con la URL
-   de la app. Sin esa variable, el workflow «Mantener la app activa» no hace nada.
+4. **Mantenerla despierta.** El workflow «Mantener la app activa» visita https://datos-ilostar.streamlit.app/ cada 4 horas.
+   Si la URL cambia, crear la variable `ILO_APP_URL` (*Settings → Secrets and variables → Actions → Variables*) con la nueva.

@@ -55,8 +55,8 @@ def leyenda(items):
     st.markdown(f"<div style='text-align:center;margin:0.2rem 0 0.8rem 0'>{html}</div>", unsafe_allow_html=True)
 
 
-def dona(partes, alto=234):
-    """partes: [(etiqueta, valor, color)]. Dona con el porcentaje de cada parte en el tooltip."""
+def dona(partes, alto=234, centro=None):
+    """partes: [(etiqueta, valor, color)]. Dona con el porcentaje de cada parte en el tooltip y un texto en el centro."""
     d = pd.DataFrame(partes, columns=["parte", "valor", "color"])
     if d.empty or d.valor.isna().any():
         st.info("Sin datos para este año.")
@@ -67,11 +67,14 @@ def dona(partes, alto=234):
         theta=alt.Theta("valor:Q", stack=True), order=alt.Order("orden:Q"),
         color=alt.Color("color:N", scale=None),
         tooltip=[alt.Tooltip("parte:N", title=""), alt.Tooltip("pct:Q", format=",.1f", title="%")])
+    if centro:
+        ch += alt.Chart(pd.DataFrame({"t": [centro]})).mark_text(fontSize=18, fontWeight="bold", color=COLOR["IBERIA"]).encode(text="t:N")
     mostrar(ch.properties(height=alto))
 
 
-def barras_areas(d, col, alto_fila=78):
-    """Barras horizontales por área (d con area_id y la columna en miles), en el orden de d y con la cifra en millones."""
+def barras_areas(d, col, alto_fila=78, media=None):
+    """Barras horizontales por área (d con area_id y la columna en miles), en el orden de d y con la cifra en millones.
+    media: valor de la media de la UE por país (total UE / 27), como línea discontinua de referencia."""
     d = d.dropna(subset=[col]).copy()
     if d.empty:
         st.info("Sin datos para este año.")
@@ -86,26 +89,35 @@ def barras_areas(d, col, alto_fila=78):
         color=alt.Color("color:N", scale=None),
         tooltip=[alt.Tooltip("area:N", title=""), alt.Tooltip("etiqueta:N", title="Personas")])
     t = base.mark_text(align="left", dx=5, fontSize=12, color=TEXTO_SUAVE).encode(text="etiqueta:N")
-    mostrar((b + t).properties(height=alto_fila * len(d)))
+    capas = b + t
+    if media is not None and media == media:
+        m = pd.DataFrame({"v": [media], "t": [f"Media UE por país: {millones(media)}"]})
+        regla = alt.Chart(m).encode(x=alt.X("v:Q"))
+        capas += regla.mark_rule(color=COLOR["UE27"], strokeDash=[5, 4], strokeWidth=2)
+        capas += regla.mark_text(align="left", baseline="bottom", dx=4, dy=-2, y=0, fontSize=11, color=COLOR["UE27"]).encode(text="t:N")
+    mostrar(capas.properties(height=alto_fila * len(d)))
 
 
-def lineas(d, x, y, serie, fmt=",.1f", titulo=None, alto=340):
-    """Líneas por área con sus colores fijos."""
+def lineas(d, x, y, serie, fmt=",.1f", titulo=None, alto=340, nombres=None):
+    """Líneas por área con sus colores fijos. nombres: etiquetas de la leyenda distintas de NOMBRE."""
     if d.empty:
         st.info("Sin datos en esta carga.")
         return
     d = d.copy()
-    d["Área"] = d[serie].map(NOMBRE).fillna(d[serie])
-    dominio = [NOMBRE[a] for a in COLOR if NOMBRE[a] in set(d["Área"])]
+    nombres = {**NOMBRE, **(nombres or {})}
+    d["Área"] = d[serie].map(nombres).fillna(d[serie])
+    areas = [a for a in COLOR if nombres[a] in set(d["Área"])]
     ch = alt.Chart(d).mark_line(point=True, strokeWidth=2.5).encode(
         x=alt.X(f"{x}:O", title=None, axis=alt.Axis(labelAngle=0)),
         y=alt.Y(f"{y}:Q", title=titulo, axis=alt.Axis(format=fmt), scale=alt.Scale(zero=False)),
-        color=alt.Color("Área:N", scale=alt.Scale(domain=dominio, range=[COLOR[a] for a in COLOR if NOMBRE[a] in dominio])),
+        color=alt.Color("Área:N", sort=[nombres[a] for a in areas],
+                        scale=alt.Scale(domain=[nombres[a] for a in areas], range=[COLOR[a] for a in areas]),
+                        legend=alt.Legend(labelLimit=400)),
         tooltip=[alt.Tooltip("Área:N"), alt.Tooltip(f"{x}:O", title="Año"), alt.Tooltip(f"{y}:Q", format=fmt, title=titulo or y)])
     mostrar(ch.properties(height=alto))
 
 
-def ranking(d, cat, val, color, fmt=",.1f", titulo=None, ref=None):
+def ranking(d, cat, val, color, fmt=",.1f", titulo=None, ref=None, ref_texto="Media UE"):
     """Barras horizontales ordenadas de mayor a menor; color: columna con el color de cada barra. ref: línea vertical (p. ej. la UE)."""
     if d.empty:
         st.info("Sin datos para este año.")
@@ -117,5 +129,7 @@ def ranking(d, cat, val, color, fmt=",.1f", titulo=None, ref=None):
         tooltip=[alt.Tooltip(f"{cat}:N", title=""), alt.Tooltip(f"{val}:Q", format=fmt, title=titulo or val)])
     capas += base.mark_text(align="left", dx=4, fontSize=11, color=TEXTO).encode(text=alt.Text(f"{val}:Q", format=fmt))
     if ref is not None:
-        capas += alt.Chart(pd.DataFrame({"v": [ref]})).mark_rule(color=COLOR["UE27"], strokeDash=[5, 4], strokeWidth=2).encode(x="v:Q")
+        r = alt.Chart(pd.DataFrame({"v": [ref], "t": [ref_texto]})).encode(x="v:Q")
+        capas += r.mark_rule(color=COLOR["UE27"], strokeDash=[5, 4], strokeWidth=2)
+        capas += r.mark_text(align="left", baseline="bottom", dx=4, y=-4, fontSize=11, fontWeight="bold", color=COLOR["UE27"]).encode(text="t:N")
     mostrar(capas.properties(height=22 * len(d)))

@@ -1,5 +1,7 @@
 # Mercado laboral · Iberia frente a la UE (ILOSTAT)
 
+App: https://datos-ilostar.streamlit.app/
+
 App web con datos públicos de la **Organización Internacional del Trabajo (ILOSTAT)**: población de 15 años o más,
 fuerza laboral y desempleo de **España, Portugal, Iberia y la UE**, actualizada cada día laborable de forma automática.
 Misma arquitectura y metodología que `javiermcb/Datos_INE`.
@@ -51,7 +53,7 @@ Son cálculos propios, no cifras oficiales de la OIT. Si ILOSTAT da varias encue
 | `pipeline_ilostat.yml` | días laborables 06:17 UTC, cambios en `pipeline/` | descarga, modelo, control de calidad y publicación (solo desde `main`); avisa por issue si falla |
 | `app_pruebas.yml` | cambios en `streamlit_app/` | abre todas las páginas con la muestra |
 | `pipeline_pruebas.yml` | cambios en `pipeline/` y PRs | pruebas sin red: lectura de ILOSTAT, modelo, control antes de publicar, avisos |
-| `mantener_app_activa.yml` | cada 4 horas | abre la app para que Streamlit no la duerma (solo si existe la variable `ILO_APP_URL`) |
+| `mantener_app_activa.yml` | cada 4 horas | abre la app (https://datos-ilostar.streamlit.app/) para que Streamlit no la duerma |
 | `explorar_ilostat.yml` | manual / `exploracion/` | comprueba formato y cobertura de la API |
 
 ## Documentación

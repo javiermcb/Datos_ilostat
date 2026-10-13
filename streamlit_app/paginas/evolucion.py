@@ -9,6 +9,10 @@ SEXO = {"Todos": "Total", "Hombres": "Hombres", "Mujeres": "Mujeres"}
 genero = st.session_state.get("genero", "Todos")
 st.title("Evolución")
 st.caption(f"{genero} · personas de 15 años o más · la UE solo aparece en los años con datos de los 27 países.")
+NOMBRES = {"UE27": "Media UE", "IBERIA": "Iberia (España + Portugal juntos)"}
+relato.nota("La tasa de Iberia no es la suma de las tasas: es la tasa de España y Portugal tomados como un solo territorio "
+            "(desempleados de los dos / activos de los dos). Por eso siempre queda entre la de Portugal y la de España, "
+            "más cerca de España porque tiene unas cuatro veces más población. Media UE: tasa del conjunto de los 27 países.")
 d = datos.comparativa(SEXO[genero])
 if d.empty:
     st.info("Sin datos en esta carga.")
@@ -18,18 +22,18 @@ ult = d[d.area_id == "UE27"].dropna(subset=["tasa_paro"]).anyo.max()
 if ult == ult:  # no es NaN
     u = d[d.anyo == ult].set_index("area_id")
     ib, ue = u.tasa_paro.get("IBERIA"), u.tasa_paro.get("UE27")
-    relato.resumen([f"Tasa de paro en {ult}: Iberia {g.es(ib, 1, ' %')} y UE {g.es(ue, 1, ' %')} "
+    relato.resumen([f"Tasa de paro en {ult}: Iberia {g.es(ib, 1, ' %')} y media UE {g.es(ue, 1, ' %')} "
                     f"({g.es(ib - ue, 1)} puntos de diferencia)." if ib is not None and ue is not None else "",
                     f"Tasa de actividad en {ult}: Iberia {g.es(u.tasa_actividad.get('IBERIA'), 1, ' %')} y "
-                    f"UE {g.es(u.tasa_actividad.get('UE27'), 1, ' %')}."])
+                    f"media UE {g.es(u.tasa_actividad.get('UE27'), 1, ' %')}."])
 
 c = st.columns(2)
 with c[0]:
     st.subheader("Tasa de paro (%)")
-    g.lineas(d.dropna(subset=["tasa_paro"]), "anyo", "tasa_paro", "area_id", titulo="%")
+    g.lineas(d.dropna(subset=["tasa_paro"]), "anyo", "tasa_paro", "area_id", titulo="%", nombres=NOMBRES)
 with c[1]:
     st.subheader("Tasa de actividad (%)")
-    g.lineas(d.dropna(subset=["tasa_actividad"]), "anyo", "tasa_actividad", "area_id", titulo="%")
+    g.lineas(d.dropna(subset=["tasa_actividad"]), "anyo", "tasa_actividad", "area_id", titulo="%", nombres=NOMBRES)
 st.subheader("Peso de Iberia en la UE (%)")
 p = d[d.area_id == "IBERIA"].melt(id_vars=["anyo"], value_vars=["cuota_ue_poblacion", "cuota_ue_fuerza_laboral", "cuota_ue_desempleados"],
                                    var_name="medida", value_name="pct").dropna()
