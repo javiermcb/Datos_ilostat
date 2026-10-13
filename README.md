@@ -4,6 +4,8 @@ App web con datos públicos de la **Organización Internacional del Trabajo (ILO
 fuerza laboral y desempleo de **España, Portugal, Iberia y la UE**, actualizada cada día laborable de forma automática.
 Misma arquitectura y metodología que `javiermcb/Datos_INE`.
 
+![Panel](docs/captura_panel.png)
+
 ## Arquitectura
 
 ```mermaid

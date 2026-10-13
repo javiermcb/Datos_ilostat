@@ -10,7 +10,7 @@ import streamlit as st
 
 TEXTO, TEXTO_SUAVE = "#00145A", "#4a5585"
 COLOR = {"UE27": "#00145A", "IBERIA": "#E8000B", "ESP": "#2457F5", "PRT": "#C5DCDC"}
-RESTO = "#B9BFD3"
+RESTO = "#E3E6EE"  # resto de países: más claro que Portugal para no confundirlos
 NOMBRE = {"UE27": "UE", "IBERIA": "Iberia", "ESP": "España", "PRT": "Portugal"}
 LOCALE = {"number": {"decimal": ",", "thousands": ".", "grouping": [3], "currency": ["", " €"]}}
 
@@ -55,7 +55,7 @@ def leyenda(items):
     st.markdown(f"<div style='text-align:center;margin:0.2rem 0 0.8rem 0'>{html}</div>", unsafe_allow_html=True)
 
 
-def dona(partes, alto=260):
+def dona(partes, alto=234):
     """partes: [(etiqueta, valor, color)]. Dona con el porcentaje de cada parte en el tooltip."""
     d = pd.DataFrame(partes, columns=["parte", "valor", "color"])
     if d.empty or d.valor.isna().any():

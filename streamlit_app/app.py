@@ -60,4 +60,5 @@ nav.run()
 
 import relato  # noqa: E402
 
+relato.estilo()
 relato.pie_periodos(datos.periodos())

@@ -41,5 +41,6 @@ else:
     import altair as alt
     g.mostrar(alt.Chart(p).mark_line(point=True, strokeWidth=2.5).encode(
         x=alt.X("anyo:O", title=None, axis=alt.Axis(labelAngle=0)), y=alt.Y("pct:Q", title="% de la UE", scale=alt.Scale(zero=False)),
-        color=alt.Color("medida:N", scale=alt.Scale(range=[g.COLOR["UE27"], g.COLOR["ESP"], g.COLOR["IBERIA"]])),
+        color=alt.Color("medida:N", sort=["Población", "Fuerza laboral", "Desempleados"],
+                        scale=alt.Scale(domain=["Población", "Fuerza laboral", "Desempleados"], range=[g.COLOR["UE27"], g.COLOR["ESP"], g.COLOR["IBERIA"]])),
         tooltip=["medida:N", alt.Tooltip("anyo:O", title="Año"), alt.Tooltip("pct:Q", format=",.1f", title="%")]).properties(height=320))

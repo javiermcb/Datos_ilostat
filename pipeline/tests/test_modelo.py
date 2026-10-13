@@ -33,26 +33,27 @@ def _datos(anyos=(2024, 2025), falta=None):
 
 
 def _mart(tmp_path):
-    return duckdb.sql(f"SELECT * FROM '{tmp_path / 'modelo' / 'marts' / 'mart_comparativa.parquet'}'").df()
+    """{(area_id, anyo): fila} del mart (sexo Total), sin pandas (el pipeline solo instala duckdb)."""
+    r = duckdb.sql(f"SELECT * FROM '{tmp_path / 'modelo' / 'marts' / 'mart_comparativa.parquet'}' WHERE sexo = 'Total'")
+    return {(f["area_id"], f["anyo"]): f for f in (dict(zip(r.columns, x)) for x in r.fetchall())}
 
 
 def test_agregados_y_tasas(tmp_path):
     _normalizado(tmp_path, _datos())
     modelo.main(tmp_path)
-    m = _mart(tmp_path).set_index(["area_id", "anyo"])
-    assert m.loc[("UE27", 2025), "poblacion"] == 100 * len(PAISES)
-    assert m.loc[("IBERIA", 2025), "poblacion"] == 200
-    assert m.loc[("ESP", 2025), "poblacion"] == 100  # la otra encuesta no se usa
-    assert m.loc[("UE27", 2025), "tasa_actividad"] == 60
-    assert m.loc[("IBERIA", 2025), "tasa_paro"] == 10
-    assert round(m.loc[("IBERIA", 2025), "cuota_ue_poblacion"], 2) == round(100 * 2 / len(PAISES), 2)
+    m = _mart(tmp_path)
+    assert m[("UE27", 2025)]["poblacion"] == 100 * len(PAISES)
+    assert m[("IBERIA", 2025)]["poblacion"] == 200
+    assert m[("ESP", 2025)]["poblacion"] == 100  # la otra encuesta no se usa
+    assert m[("UE27", 2025)]["tasa_actividad"] == 60
+    assert m[("IBERIA", 2025)]["tasa_paro"] == 10
+    assert m[("IBERIA", 2025)]["cuota_ue_poblacion"] == round(100 * 2 / len(PAISES), 2)
 
 
 def test_sin_ue_si_falta_un_pais(tmp_path):
     _normalizado(tmp_path, _datos(falta=("MLT", 2025)))
     modelo.main(tmp_path)
     m = _mart(tmp_path)
-    assert not ((m.area_id == "UE27") & (m.anyo == 2025)).any()
-    assert ((m.area_id == "UE27") & (m.anyo == 2024)).any()
+    assert ("UE27", 2025) not in m and ("UE27", 2024) in m
     falta = (tmp_path / "qa" / "ue_incompleta.csv").read_text(encoding="utf-8")
     assert "MLT" in falta and "2025" in falta
