@@ -1,1 +1,1 @@
-Control de publicación superado (sin carga previa con la que comparar)
+Control de publicación superado
