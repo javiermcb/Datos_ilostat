@@ -23,6 +23,7 @@ with c[0]:
     relato.titulo("Población", "% Iberia vs UE")
     cuota = fila("IBERIA", "cuota_ue_poblacion")
     g.leyenda([(g.COLOR["IBERIA"], f"Iberia {pct(cuota)}"), (g.COLOR["UE27"], f"Resto UE {pct(100 - cuota) if cuota is not None else '–'}")])
+    st.markdown("<div style='height:38px'></div>", unsafe_allow_html=True)  # baja la dona ~1 cm
     g.dona([("Iberia", fila("IBERIA", "poblacion"), g.COLOR["IBERIA"]),
             ("Resto de la UE", (fila("UE27", "poblacion") or 0) - (fila("IBERIA", "poblacion") or 0), g.COLOR["UE27"])],
            alto=220, centro=g.millones(fila("IBERIA", "poblacion")))
