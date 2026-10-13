@@ -6,7 +6,6 @@ on:
   push:
     paths:
       - "exploracion/**"
-      - ".github/workflows/explorar_ilostat.yml"
 
 permissions:
   contents: read
