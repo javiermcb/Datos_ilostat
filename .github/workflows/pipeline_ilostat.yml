@@ -123,7 +123,7 @@ jobs:
           cp metadatos.json indicadores.csv /tmp/app/modelo/ 2>/dev/null || true
           cp alertas.csv /tmp/app/modelo/ 2>/dev/null || true
           cd "$GITHUB_WORKSPACE"
-          # informes de calidad para la página «Estado de los datos» de la app
+          # informes de calidad junto a los datos (también en la rama calidad)
           cp datos/qa/ilostat_carga.csv datos/qa/resumen_fuentes.csv datos/qa/fuentes_elegidas.csv datos/qa/ue_incompleta.csv /tmp/app/modelo/ 2>/dev/null || true
           cd /tmp/app
           git init -q -b datos-modelo

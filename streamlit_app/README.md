@@ -9,8 +9,6 @@ Lee los Parquet que genera el pipeline (`pipeline/`) y los consulta con DuckDB. 
 | Panel | Población (peso de Iberia en la UE), Fuerza laboral (tasa de actividad) y Desempleo (tasa de paro), Iberia frente a la UE, con barras de UE, España y Portugal |
 | Evolución | Tasas de paro y de actividad por año y peso de Iberia en la UE |
 | Países de la UE | Los 27 países ordenados por el indicador elegido, con España y Portugal resaltados |
-| Datos y descargas | Tablas del modelo con filtros y descarga CSV |
-| Estado de los datos | Última carga, estado de cada indicador, años sin UE completa y encuesta usada en cada país |
 
 Filtros (barra lateral, comunes a todas las páginas): año (solo años con los 27 países) y género (Todos, Hombres, Mujeres).
 
@@ -23,8 +21,8 @@ ILO_DATOS=/ruta/al/modelo streamlit run app.py
 
 `ILO_DATOS` (variable de entorno o secreto de Streamlit) puede ser una carpeta local con `<tabla>.parquet` y
 `marts/<tabla>.parquet` o una URL base con la misma estructura (cada fichero se descarga una vez y se refresca cada 6 horas).
-Sin `ILO_DATOS` se usa `../datos/modelo`. Si el repositorio es privado, `ILO_DATOS_TOKEN` = token de GitHub
-*fine-grained* con **Contents: Read-only** solo en este repositorio.
+Sin `ILO_DATOS` se usa `../datos/modelo`. El repositorio es público, así que no hace falta token; si algún día pasa a privado,
+`ILO_DATOS_TOKEN` = token de GitHub *fine-grained* con **Contents: Read-only** solo en este repositorio.
 
 ## Pruebas
 

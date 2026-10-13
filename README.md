@@ -14,14 +14,14 @@ flowchart LR
   P -->|Parquet, si supera el control de calidad| D[(rama datos-modelo)]
   P -->|informes de calidad| C[(rama calidad)]
   P -->|si algo falla| I[Issues → correo]
-  D -->|token solo lectura| A[App Streamlit<br>rama main]
+  D --> A[App Streamlit<br>rama main]
   K[Workflow «Mantener la app activa»<br>cada 4 h] --> A
 ```
 
 | Pieza | Dónde |
 |---|---|
 | Código del pipeline | `pipeline/` (ingesta, modelo, alertas, publicación) · configuración en `pipeline/config/` |
-| App | `streamlit_app/`: Panel (Población, Fuerza laboral, Desempleo), Evolución, Países de la UE, Datos y descargas, Estado de los datos; pruebas en `tests/` |
+| App | `streamlit_app/`: Panel (Población, Fuerza laboral, Desempleo), Evolución, Países de la UE; pruebas en `tests/` |
 | Datos publicados para la app | rama `datos-modelo` (se reescribe en cada carga) |
 | Informes de calidad de cada carga | rama `calidad` |
 | Exploración de la API | `exploracion/explorar_ilostat.py` |

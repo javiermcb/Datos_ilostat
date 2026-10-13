@@ -9,7 +9,7 @@ SEXO = {"Todos": "Total", "Hombres": "Hombres", "Mujeres": "Mujeres"}
 anyo, sexo = st.session_state.get("anyo"), SEXO[st.session_state.get("genero", "Todos")]
 d = datos.comparativa(sexo)
 if d.empty or anyo is None:
-    st.info("Sin datos en esta carga. Revisa «Estado de los datos».")
+    st.info("Sin datos en esta carga.")
     st.stop()
 d = d[d.anyo == anyo].set_index("area_id")
 fila = lambda a, c: d.loc[a, c] if a in d.index else None
