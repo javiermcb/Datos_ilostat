@@ -1,7 +1,7 @@
 name: Mantener la app activa
 
 # Streamlit Community Cloud duerme las apps sin visitas. Cada 4 horas se abre la app con un navegador sin pantalla
-# y, si estaba dormida, se despierta. URL: variable del repositorio ILO_APP_URL (sin ella, el workflow no hace nada).
+# y, si estaba dormida, se despierta. URL: variable del repositorio ILO_APP_URL (por defecto la app actual).
 on:
   schedule:
     - cron: "23 */4 * * *"
@@ -17,8 +17,6 @@ concurrency:
 
 jobs:
   visitar:
-    # hasta que la app esté desplegada y la variable ILO_APP_URL creada, no se visita nada (ni se abren avisos)
-    if: vars.ILO_APP_URL != ''
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -31,7 +29,7 @@ jobs:
           pip install playwright==1.63.0
           python -m playwright install --with-deps chromium
       - name: Abrir la app (y despertarla si duerme)
-        run: python ops/mantener_activa.py "${{ vars.ILO_APP_URL }}"
+        run: python ops/mantener_activa.py "${{ vars.ILO_APP_URL || 'https://datos-ilostar.streamlit.app/' }}"
       - name: Avisar si la app no responde
         if: failure()
         env:
