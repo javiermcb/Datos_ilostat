@@ -1,0 +1,45 @@
+{
+ "generado": "2026-10-13 10:44 UTC",
+ "ficheros": {
+  "dim_area": {
+   "filas": 29,
+   "bytes_parquet": 1103
+  },
+  "dim_indicador": {
+   "filas": 3,
+   "bytes_parquet": 2622
+  },
+  "fact_ilostat": {
+   "filas": 4176,
+   "bytes_parquet": 22132
+  },
+  "marts/mart_comparativa": {
+   "filas": 1392,
+   "bytes_parquet": 41218
+  }
+ },
+ "incidencias_carga": [],
+ "indicadores": [
+  {
+   "indicador_id": "EAP_TEAP_SEX_AGE_NB_A",
+   "nombre": "Fuerza laboral (población activa, 15 años o más)",
+   "anyo_min": 2010,
+   "anyo_max": 2025,
+   "anyo_max_ue": 2025
+  },
+  {
+   "indicador_id": "POP_XWAP_SEX_AGE_NB_A",
+   "nombre": "Población en edad de trabajar (15 años o más)",
+   "anyo_min": 2010,
+   "anyo_max": 2025,
+   "anyo_max_ue": 2025
+  },
+  {
+   "indicador_id": "UNE_TUNE_SEX_AGE_NB_A",
+   "nombre": "Desempleados (15 años o más)",
+   "anyo_min": 2010,
+   "anyo_max": 2025,
+   "anyo_max_ue": 2025
+  }
+ ]
+}

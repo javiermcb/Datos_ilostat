@@ -1,0 +1,2 @@
+# Versiones exactas del pipeline (GitHub Actions). Para actualizar: cambiar aquí y lanzar el pipeline a mano.
+duckdb==1.5.6

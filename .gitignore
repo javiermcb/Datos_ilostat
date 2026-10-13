@@ -1,0 +1,3 @@
+__pycache__/
+# pipeline: los datos se regeneran en GitHub Actions y se publican en la rama datos-modelo
+datos/

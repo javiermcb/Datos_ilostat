@@ -1,0 +1,42 @@
+name: Muestra para las pruebas de la app
+
+# Genera el modelo con datos reales de ILOSTAT y lo guarda en resultados/dev_modelo de la rama desde la que se lanza
+# (las pruebas de la app abren todas las páginas con esa muestra). Lanzar a mano para refrescarla.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/muestra_app.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  muestra:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.11"
+      - name: Dependencias
+        run: pip install -r pipeline/requirements.txt
+      - name: Modelo con datos reales
+        run: |
+          python pipeline/ilostat.py
+          python pipeline/modelo.py
+          python pipeline/alertas.py
+          python pipeline/publicacion.py --repo "${{ github.repository }}"
+      - name: Guardar la muestra en la rama
+        run: |
+          rm -rf resultados/dev_modelo && mkdir -p resultados/dev_modelo/marts
+          cd datos/publicar/modelo
+          cp *.parquet metadatos.json alertas.csv ../../../resultados/dev_modelo/
+          cp marts/*.parquet ../../../resultados/dev_modelo/marts/
+          cp ../../qa/ilostat_carga.csv ../../qa/resumen_fuentes.csv ../../qa/fuentes_elegidas.csv ../../qa/ue_incompleta.csv ../../../resultados/dev_modelo/
+          cd "$GITHUB_WORKSPACE"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898+github-actions[bot]@users.noreply.github.com"
+          git add resultados/dev_modelo
+          git diff --cached --quiet || { git commit -q -m "Muestra del modelo para las pruebas de la app (run ${{ github.run_id }})"; git push -q origin HEAD:${{ github.ref_name }}; }
