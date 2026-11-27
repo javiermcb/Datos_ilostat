@@ -1,0 +1,4 @@
+indicador_id;clave;nombre;tema;unidad;nota
+POP_XWAP_SEX_AGE_NB_A;poblacion;Población en edad de trabajar (15 años o más);Población;miles de personas;Encuesta de población activa de cada país (ILOSTAT, serie armonizada)
+EAP_TEAP_SEX_AGE_NB_A;fuerza_laboral;Fuerza laboral (población activa, 15 años o más);Fuerza laboral;miles de personas;Ocupados más desempleados
+UNE_TUNE_SEX_AGE_NB_A;desempleados;Desempleados (15 años o más);Desempleo;miles de personas;Definición de la OIT

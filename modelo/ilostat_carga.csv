@@ -1,0 +1,4 @@
+indicador_id;tema;estado;datos;paises;anyo_min;anyo_max;tiempo;error
+POP_XWAP_SEX_AGE_NB_A;Población;OK;1296;27;2010;2025;2s;
+EAP_TEAP_SEX_AGE_NB_A;Fuerza laboral;OK;1296;27;2010;2025;2s;
+UNE_TUNE_SEX_AGE_NB_A;Desempleo;OK;1296;27;2010;2025;2s;
